@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pasig Catholic College - Service Request System</title>
+  <style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#ffffff; color:#333; min-height:100vh; }
+.page { display:none; } .page.active { display:block; }
+header { background:linear-gradient(135deg,#8B0000 0%,#B22222 50%,#DC143C 100%); color:white; padding:20px 0; box-shadow:0 4px 6px rgba(0,0,0,0.12); }
+.header-content { text-align:center; padding:0 20px; }
+.header-content h1 { font-size:2em; margin-bottom:5px; }
+.header-content h2 { font-size:1.3em; font-weight:300; margin-bottom:3px; }
+.header-content p { font-size:0.9em; opacity:0.95; }
+.main-nav { background-color:#660000; display:flex; justify-content:center; }
+.nav-btn { padding:15px 30px; background:transparent; color:white; border:none; cursor:pointer; font-size:1em; transition:all 0.3s; border-bottom:3px solid transparent; position:relative; }
+.nav-btn:hover { background:rgba(255,255,255,0.06); border-bottom:3px solid #DC143C; }
+.nav-btn.active { background:#8B0000; border-bottom:3px solid #FFD700; }
+.logout-btn { margin-left:auto; background:#4a0000; }
+.logout-btn:hover { background:#6a0000; }
+.nav-badge { display:inline-block; min-width:18px; height:18px; line-height:18px; font-size:12px; padding:0 5px; border-radius:18px; background:#DC143C; color:white; text-align:center; position:absolute; top:6px; right:8px; }
+.nav-badge.hidden { display:none; }
+.home-container { max-width:1200px; margin:40px auto; padding:0 20px; }
+.welcome-section { background:white; padding:40px; border-radius:12px; border:1px solid #e6e6e6; box-shadow:0 6px 18px rgba(0,0,0,0.06); text-align:center; }
+.welcome-section h2 { color:#8B0000; font-size:2.2em; margin-bottom:16px; }
+.welcome-section > p { font-size:1.05em; color:#666; margin-bottom:24px; }
+.features { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px; margin:24px 0; }
+.feature-card { background:linear-gradient(135deg,#FFF5F5,#FFE5E5); padding:20px; border-radius:10px; border-left:4px solid #DC143C; transition:transform 0.3s,box-shadow 0.3s; }
+.feature-card:hover { transform:translateY(-3px); box-shadow:0 8px 16px rgba(220,20,60,0.08); }
+.action-buttons { display:flex; gap:18px; justify-content:center; margin-top:18px; }
+.btn { padding:10px 20px; border:none; border-radius:6px; cursor:pointer; font-size:1em; transition:all 0.3s; font-weight:600; }
+.btn-primary { background:linear-gradient(135deg,#DC143C,#8B0000); color:white; box-shadow:0 4px 8px rgba(220,20,60,0.12); }
+.btn-primary:hover { background:linear-gradient(135deg,#B22222,#660000); transform:translateY(-2px); }
+.btn-secondary { background:white; color:#DC143C; border:2px solid #DC143C; }
+.btn-secondary:hover { background:#DC143C; color:white; }
+.login-container { max-width:520px; margin:40px auto; padding:0 20px; }
+.login-box { background:white; padding:30px; border-radius:12px; border:1px solid #e6e6e6; box-shadow:0 6px 18px rgba(0,0,0,0.06); }
+.login-box h2 { color:#8B0000; text-align:center; margin-bottom:18px; }
+.form-group { margin-bottom:14px; }
+.form-group label { display:block; color:#333; font-weight:600; margin-bottom:6px; }
+.form-group input,.form-group select,.form-group textarea { width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; font-size:1em; transition:border-color 0.3s; }
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus { outline:none; border-color:#DC143C; }
+.error-message { background:#FFE5E5; color:#8B0000; padding:10px; border-radius:6px; margin-bottom:12px; border-left:4px solid #DC143C; }
+.demo-credentials { margin-top:16px; padding:12px; background:#FFF5F5; border-radius:6px; border:1px solid #FFD0D0; }
+.dashboard-container { max-width:1200px; margin:0 auto; padding:20px; }
+.welcome-bar { background:white; padding:22px; border-radius:12px; border:1px solid #e6e6e6; box-shadow:0 6px 18px rgba(0,0,0,0.04); margin-bottom:20px; }
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-top:12px; }
+.stat-card { background:linear-gradient(135deg,#FFF5F5,#FFE5E5); padding:14px; border-radius:10px; text-align:center; border-left:4px solid #DC143C; }
+.stat-number { font-size:2em; font-weight:700; color:#8B0000; display:block; }
+.stat-label { font-size:0.85em; color:#666; display:block; margin-top:4px; }
+.section { display:none; } .section.active { display:block; }
+.content-box { background:white; padding:20px; border-radius:12px; border:1px solid #e6e6e6; box-shadow:0 6px 18px rgba(0,0,0,0.04); }
+.content-box h2 { color:#8B0000; margin-bottom:18px; padding-bottom:10px; border-bottom:3px solid #DC143C; }
+.requests-list { display:grid; gap:14px; }
+.request-item { background:#FAFAFA; border:1px solid #E5E5E5; border-left:6px solid #DC143C; padding:18px; border-radius:8px; transition:all 0.3s; }
+.request-item:hover { box-shadow:0 6px 12px rgba(220,20,60,0.06); transform:translateY(-2px); }
+.request-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid #eee; }
+.reference-number { font-size:1.05em; font-weight:bold; color:#8B0000; font-family:'Courier New',monospace; }
+.priority-badge { padding:6px 12px; border-radius:20px; font-size:0.85em; font-weight:700; text-transform:uppercase; }
+.priority-high { background:#FFE5E5; color:#CC0000; } .priority-medium { background:#FFF5E5; color:#CC6600; } .priority-low { background:#E5F5FF; color:#0066CC; }
+.request-details { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-top:10px; }
+.detail-label { font-size:0.85em; color:#666; text-transform:uppercase; margin-bottom:4px; display:block; }
+.detail-value { color:#333; font-weight:500; }
+.status-badge { display:inline-block; padding:6px 12px; border-radius:20px; font-weight:700; text-transform:uppercase; }
+.status-pending { background:#FFF5E5; color:#CC6600; } .status-in-progress { background:#E5F5FF; color:#0066CC; } .status-completed { background:#E5FFE5; color:#00AA00; }
+.request-actions { display:flex; gap:10px; margin-top:12px; }
+.btn-update { padding:8px 16px; background:linear-gradient(135deg,#DC143C,#8B0000); color:white; border:none; border-radius:6px; cursor:pointer; font-size:0.9em; font-weight:600; transition:all 0.3s; }
+.btn-update:hover { background:linear-gradient(135deg,#B22222,#660000); transform:translateY(-1px); }
+.analytics-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:18px; }
+.analytics-card { background:#FAFAFA; padding:16px; border-radius:10px; border:1px solid #E5E5E5; line-height:1.8; }
+.sr-modal { display:none; position:fixed; z-index:2000; inset:0; align-items:center; justify-content:center; background:rgba(0,0,0,0.6); }
+.sr-modal.active { display:flex; }
+.sr-modal .card { background:#fff; padding:24px; border-radius:8px; width:90%; max-width:520px; box-shadow:0 8px 24px rgba(0,0,0,0.25); }
+.sr-modal .card h3 { color:#8B0000; margin-bottom:12px; }
+footer { background:#f2f2f2; color:#333; text-align:center; padding:16px; margin-top:24px; border-top:1px solid #e6e6e6; }
+.hidden { display:none !important; }
+.login-links a { color:#8B0000; font-size:0.9em; }
+@media(max-width:768px){
+  .header-content h1{font-size:1.5em;} .header-content h2{font-size:1em;}
+  .main-nav{flex-wrap:wrap;} .nav-btn{padding:10px 14px;font-size:0.95em;}
+  .features{grid-template-columns:1fr;} .request-details{grid-template-columns:1fr;}
+}
+  </style>
+</head>
+<body>
+
+<!-- Home Page -->
+<div id="home-page" class="page active">
+  <header>
+    <div class="header-content">
+      <h1>Pasig Catholic College</h1>
+      <h2>Automated Monitoring System for Service Requests and Maintenance</h2>
+      <p>ICTC Department</p>
+    </div>
+  </header>
+  <div class="home-container">
+    <div class="welcome-section">
+      <h2>Welcome to the Service Request Management System</h2>
+      <p>Submit and track maintenance requests for computer labs, classrooms, and equipment throughout the campus.</p>
+      <div class="features">
+        <div class="feature-card"><h3>📝 Submit Requests</h3><p>Faculty can easily submit service requests.</p></div>
+        <div class="feature-card"><h3>📊 Track Status</h3><p>Monitor your requests in real-time with unique reference numbers.</p></div>
+        <div class="feature-card"><h3>⚡ Quick Response</h3><p>ICTC Department manages and responds to requests efficiently.</p></div>
+      </div>
+      <div class="action-buttons">
+        <button class="btn btn-primary" onclick="showPage('login-page')">Log In</button>
+      </div>
+    </div>
+  </div>
+  <footer><p>&copy; 2025 Pasig Catholic College - ICTC Department. All rights reserved.</p></footer>
+</div>
+
+<!-- Login Page -->
+<div id="login-page" class="page">
+  <header><div class="header-content"><h1>Pasig Catholic College</h1><h2>Service Request System - Log In</h2></div></header>
+  <div class="login-container">
+    <div class="login-box">
+      <h2>Log In</h2>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="role">Select Your Role:</label>
+          <select id="role" required>
+            <option value="">-- Select Role --</option>
+            <option value="faculty">Faculty</option>
+            <option value="ictc">ICTC Staff</option>
+          </select>
+        </div>
+        <div class="form-group"><label for="username">Username:</label><input id="username" type="text" required placeholder="Enter your username"></div>
+        <div class="form-group"><label for="password">Password:</label><input id="password" type="password" required placeholder="Enter your password"></div>
+        <div id="error-message" class="error-message hidden"></div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-primary" type="submit">Log In</button>
+          <button class="btn" type="button" onclick="showPage('home-page')">Back</button>
+        </div>
+      </form>
+      <div style="margin-top:12px;"><a href="#" style="color:#8B0000;font-size:0.9em;">Forgot Password?</a></div>
+      <div class="demo-credentials">
+        <h4>Demo Login Credentials:</h4>
+        <p><strong>Faculty:</strong> faculty1 | faculty123</p>
+        <p><strong>ICTC Staff:</strong> ictc1 | ictc123</p>
+      </div>
+    </div>
+  </div>
+  <footer><p>&copy; 2025 Pasig Catholic College - ICTC Department</p></footer>
+</div>
+
+<!-- Faculty Dashboard -->
+<div id="faculty-dashboard" class="page">
+  <header>
+    <div class="header-content"><h1>Pasig Catholic College - Faculty Dashboard</h1></div>
+    <nav class="main-nav">
+      <button class="nav-btn" data-section="faculty-submit" onclick="showSection('faculty-submit')">Submit Request</button>
+      <button class="nav-btn" data-section="faculty-my-requests" onclick="showSection('faculty-my-requests')">My Requests</button>
+      <button class="nav-btn logout-btn" onclick="logout()">Logout</button>
+    </nav>
+  </header>
+  <div class="dashboard-container">
+    <div class="welcome-bar">
+      <h2>Welcome, <span id="faculty-name-display"></span>!</h2>
+      <div class="stats">
+        <div class="stat-card"><span id="faculty-total-requests" class="stat-number">0</span><span class="stat-label">Total Requests</span></div>
+        <div class="stat-card"><span id="faculty-pending-requests" class="stat-number">0</span><span class="stat-label">Pending</span></div>
+        <div class="stat-card"><span id="faculty-completed-requests" class="stat-number">0</span><span class="stat-label">Completed</span></div>
+      </div>
+    </div>
+    <div id="faculty-submit-section" class="section active">
+      <div class="content-box">
+        <h2>Submit New Service Request</h2>
+        <form id="faculty-request-form">
+          <div class="form-group"><label>Your Name:</label><input id="faculty-requestor-name" required></div>
+          <div class="form-group">
+            <label>Department:</label>
+            <select id="faculty-department" required>
+              <option value="">-- Select Department --</option>
+              <option value="01">Senior High School (SHS)</option>
+              <option value="02">Junior High School (JHS)</option>
+              <option value="03">College</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Location:</label><input id="faculty-location" placeholder="e.g., Faculty Room, Classroom 305" required></div>
+          <div class="form-group">
+            <label>Type of Issue:</label>
+            <select id="faculty-issue" required onchange="toggleOtherIssue('faculty')">
+              <option value="">-- Select Issue Type --</option>
+              <option>Computer not turning on</option>
+              <option>Internet connection issues</option>
+              <option>Printer jammed</option>
+              <option>Software not working</option>
+              <option>Hardware damage</option>
+              <option>Projector malfunction</option>
+              <option>Audio system problems</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div id="faculty-other-issue-container" class="form-group hidden">
+            <label>Describe Your Issue:</label>
+            <textarea id="faculty-other-issue" rows="4"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Priority:</label>
+            <select id="faculty-priority" required>
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" type="submit">Submit Request</button>
+        </form>
+      </div>
+    </div>
+    <div id="faculty-my-requests-section" class="section">
+      <div class="content-box"><h2>My Service Requests</h2><div id="faculty-requests-list" class="requests-list"></div></div>
+    </div>
+  </div>
+  <footer><p>&copy; 2025 Pasig Catholic College - ICTC Department</p></footer>
+</div>
+
+<!-- ICTC Dashboard -->
+<div id="ictc-dashboard" class="page">
+  <header>
+    <div class="header-content"><h1>Pasig Catholic College - ICTC Staff Dashboard</h1></div>
+    <nav class="main-nav">
+      <button class="nav-btn" data-section="ictc-overview" onclick="showSection('ictc-overview')">Overview <span id="ictc-badge" class="nav-badge hidden"></span></button>
+      <button class="nav-btn" data-section="ictc-all-requests" onclick="showSection('ictc-all-requests')">All Requests</button>
+      <button class="nav-btn" data-section="ictc-analytics" onclick="showSection('ictc-analytics')">Analytics</button>
+      <button class="nav-btn logout-btn" onclick="logout()">Logout</button>
+    </nav>
+  </header>
+  <div class="dashboard-container">
+    <div class="welcome-bar">
+      <h2>Welcome, <span id="ictc-name-display"></span>!</h2>
+      <div class="stats">
+        <div class="stat-card"><span id="all-total-requests" class="stat-number">0</span><span class="stat-label">Total Requests</span></div>
+        <div class="stat-card"><span id="all-pending-requests" class="stat-number">0</span><span class="stat-label">Pending</span></div>
+        <div class="stat-card"><span id="all-completed-requests" class="stat-number">0</span><span class="stat-label">Completed</span></div>
+      </div>
+    </div>
+    <div id="ictc-unread-banner" class="content-box hidden" style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <h3 id="ictc-unread-title" style="margin:0;">New Requests (0)</h3>
+          <div id="ictc-unread-list" style="margin-top:8px;color:#333;"></div>
+        </div>
+        <button id="mark-read-btn" class="btn btn-secondary">Mark All As Read</button>
+      </div>
+    </div>
+    <div id="ictc-overview-section" class="section active">
+      <div class="content-box"><h2>Recent Requests</h2><div id="ictc-overview-list" class="requests-list"></div></div>
+    </div>
+    <div id="ictc-all-requests-section" class="section">
+      <div class="content-box"><h2>All Requests</h2><div id="ictc-requests-list" class="requests-list"></div></div>
+    </div>
+    <div id="ictc-analytics-section" class="section">
+      <div class="content-box"><h2>Analytics</h2><div id="analytics-output"></div></div>
+    </div>
+  </div>
+  <footer><p>&copy; 2025 Pasig Catholic College - ICTC Department</p></footer>
+</div>
+
+<!-- Confirmation modal -->
+<div id="confirm-modal" class="sr-modal" role="dialog">
+  <div class="card">
+    <h3>Request Submitted</h3>
+    <p id="confirm-message"></p>
+    <div style="text-align:right;margin-top:12px;"><button class="btn btn-primary" onclick="closeConfirm()">OK</button></div>
+  </div>
+</div>
+
+<!-- Update modal -->
+<div id="update-modal" class="sr-modal" role="dialog">
+  <div class="card">
+    <h3>Update Request</h3>
+    <div id="update-modal-body"></div>
+    <form id="update-form">
+      <div class="form-group"><label>Assign To:</label><input id="update-assigned"></div>
+      <div class="form-group">
+        <label>Status:</label>
+        <select id="update-status">
+          <option value="pending">Pending</option>
+          <option value="in-progress">In Progress</option>
+          <option value="completed">Completed</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Technician Notes:</label><textarea id="update-notes" rows="3"></textarea></div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px;">
+        <button type="button" class="btn btn-secondary" onclick="closeUpdateModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+const SCHOOL_YEAR='2526', STORAGE_KEY='pcc_requests_v1', LS_PREFIX='pcc_ictc_lastSeen_';
+const DEMO_USERS=[
+  {role:'faculty',username:'faculty1',password:'faculty123',name:'Jane Faculty'},
+  {role:'ictc',username:'ictc1',password:'ictc123',name:'Mark ICTC'}
+];
+let currentUser=null, requests=[];
+const esc=s=>String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const el=id=>document.getElementById(id);
+const save=()=>localStorage.setItem(STORAGE_KEY,JSON.stringify(requests));
+const load=()=>JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+const deptName=c=>({'01':'Senior High School (SHS)','02':'Junior High School (JHS)','03':'College'}[c])||'Unknown';
+function genRef(dept){
+  const pre=`${SCHOOL_YEAR}-${dept}`;
+  return `${pre}-${String(requests.filter(r=>r.reference&&r.reference.startsWith(pre)).length+1).padStart(3,'0')}`;
+}
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  el(id)&&el(id).classList.add('active');
+  if(id==='faculty-dashboard')setNavActive('faculty-submit');
+  if(id==='ictc-dashboard'){setNavActive('ictc-overview');if(currentUser?.role==='ictc'){localStorage.setItem(LS_PREFIX+currentUser.username,new Date().toISOString());}}
+  refreshAll();
+}
+function showSection(base){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  const t=el(base+'-section'); if(t)t.classList.add('active');
+  const root=t?.closest('.page');
+  if(root){root.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));const b=Array.from(root.querySelectorAll('.nav-btn')).find(b=>b.dataset.section===base);if(b)b.classList.add('active');}
+}
+function setNavActive(base){
+  const root=document.querySelector('.page.active'); if(!root)return;
+  root.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  const b=root.querySelector(`.nav-btn[data-section="${base}"]`); if(b)b.classList.add('active');
+}
+function renderList(cid,list,ictc=false){
+  const c=el(cid); if(!c)return;
+  if(!list.length){c.innerHTML='<p style="text-align:center;color:#666;padding:30px">No requests found.</p>';return;}
+  c.innerHTML=list.map(r=>`
+    <div class="request-item">
+      <div class="request-header"><span class="reference-number">${esc(r.reference)}</span><span class="priority-badge priority-${r.priority||'medium'}">${r.priority||'medium'}</span></div>
+      <div class="request-details">
+        <div><span class="detail-label">Issue</span><span class="detail-value">${esc(r.issue)}</span></div>
+        <div><span class="detail-label">Location</span><span class="detail-value">${esc(r.location)}</span></div>
+        <div><span class="detail-label">Department</span><span class="detail-value">${esc(r.departmentName||deptName(r.department))}</span></div>
+        <div><span class="detail-label">Status</span><span class="status-badge status-${r.status||'pending'}">${(r.status||'pending').replace('-',' ')}</span></div>
+        <div><span class="detail-label">Submitted</span><span class="detail-value">${esc(r.timestamp)}</span></div>
+      </div>
+      ${r.assignedTo?`<div style="margin-top:8px"><span class="detail-label">Assigned To</span> <span class="detail-value">${esc(r.assignedTo)}</span></div>`:''}
+      ${r.technicianNotes?`<div style="margin-top:4px"><span class="detail-label">Notes</span> <span class="detail-value">${esc(r.technicianNotes)}</span></div>`:''}
+      ${ictc?`<div class="request-actions"><button class="btn-update" onclick="openUpdate('${r.id}')">Update Request</button></div>`:''}
+    </div>`).join('');
+}
+function refreshAll(){
+  requests=load();
+  const fu=currentUser?.role==='faculty'?currentUser.username:'faculty1';
+  const fr=requests.filter(r=>r.username===fu);
+  el('faculty-total-requests').textContent=fr.length;
+  el('faculty-pending-requests').textContent=fr.filter(r=>r.status==='pending').length;
+  el('faculty-completed-requests').textContent=fr.filter(r=>r.status==='completed').length;
+  renderList('faculty-requests-list',fr);
+  el('all-total-requests').textContent=requests.length;
+  el('all-pending-requests').textContent=requests.filter(r=>r.status==='pending').length;
+  el('all-completed-requests').textContent=requests.filter(r=>r.status==='completed').length;
+  renderList('ictc-requests-list',requests,true);
+  renderList('ictc-overview-list',requests.slice(0,10),true);
+  const ao=el('analytics-output');
+  if(ao){
+    const bs=requests.reduce((a,r)=>{a[r.status]=(a[r.status]||0)+1;return a},{});
+    const bp=requests.reduce((a,r)=>{a[r.priority]=(a[r.priority]||0)+1;return a},{});
+    ao.innerHTML=`<div class="analytics-grid">
+      <div class="analytics-card"><h3 style="color:#8B0000;margin-bottom:10px">Requests by Status</h3><p>⏳ Pending: <strong>${bs.pending||0}</strong></p><p>🔧 In Progress: <strong>${bs['in-progress']||0}</strong></p><p>✅ Completed: <strong>${bs.completed||0}</strong></p></div>
+      <div class="analytics-card"><h3 style="color:#8B0000;margin-bottom:10px">Requests by Priority</h3><p>🔴 High: <strong>${bp.high||0}</strong></p><p>🟡 Medium: <strong>${bp.medium||0}</strong></p><p>🔵 Low: <strong>${bp.low||0}</strong></p></div>
+      <div class="analytics-card"><h3 style="color:#8B0000;margin-bottom:10px">Summary</h3><p>📋 Total: <strong>${requests.length}</strong></p><p>📈 Completion Rate: <strong>${requests.length?Math.round(((bs.completed||0)/requests.length)*100):0}%</strong></p></div>
+    </div>`;
+  }
+  const iu=currentUser?.role==='ictc'?currentUser.username:'ictc1';
+  const ls=localStorage.getItem(LS_PREFIX+iu);
+  const uc=ls?requests.filter(r=>r.createdAt&&r.createdAt>ls).length:requests.length;
+  const badge=el('ictc-badge'); if(badge){badge.textContent=uc;badge.classList.toggle('hidden',uc===0);}
+  const banner=el('ictc-unread-banner');
+  if(banner){
+    if(uc>0){
+      banner.classList.remove('hidden');
+      el('ictc-unread-title').textContent=`New Requests (${uc})`;
+      const ul=requests.filter(r=>!ls||(r.createdAt&&r.createdAt>ls)).slice(0,5);
+      el('ictc-unread-list').innerHTML=ul.map(r=>`<div style="margin-bottom:6px"><strong>${esc(r.reference)}</strong> — ${esc(r.requestorName)} — ${esc((r.issue||'').slice(0,100))}</div>`).join('');
+    } else banner.classList.add('hidden');
+  }
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  el('login-form')?.addEventListener('submit',e=>{
+    e.preventDefault();
+    const role=el('role').value,user=el('username').value.trim(),pass=el('password').value.trim();
+    const u=DEMO_USERS.find(x=>x.role===role&&x.username===user&&x.password===pass);
+    if(!u){const e=el('error-message');e.textContent='Invalid credentials.';e.classList.remove('hidden');return;}
+    el('error-message').classList.add('hidden');
+    currentUser=u; el('username').value=''; el('password').value=''; el('role').value='';
+    if(u.role==='faculty'){el('faculty-name-display').textContent=u.name;showPage('faculty-dashboard');showSection('faculty-submit');}
+    else{el('ictc-name-display').textContent=u.name;showPage('ictc-dashboard');showSection('ictc-overview');}
+    refreshAll();
+  });
+  el('faculty-request-form')?.addEventListener('submit',e=>{
+    e.preventDefault();
+    const name=el('faculty-requestor-name').value.trim()||(currentUser?.name||'Faculty');
+    const dept=el('faculty-department').value,loc=el('faculty-location').value.trim();
+    const sel=el('faculty-issue'),issue=sel.value==='Other'?el('faculty-other-issue').value.trim():sel.value;
+    const pri=el('faculty-priority').value;
+    if(!dept||!issue){alert('Please select department and issue type.');return;}
+    requests=load();
+    const r={id:Date.now()+Math.floor(Math.random()*9999),reference:genRef(dept),username:currentUser?.username||'faculty1',requestorName:name,department:dept,departmentName:deptName(dept),issue,priority:pri,location:loc,status:'pending',assignedTo:'',technicianNotes:'',createdAt:new Date().toISOString(),timestamp:new Date().toLocaleString()};
+    requests.unshift(r); save();
+    showConfirm(`Request submitted!<br><br>Reference Number: <strong>${r.reference}</strong>`);
+    e.target.reset(); el('faculty-other-issue-container').classList.add('hidden');
+    refreshAll(); showSection('faculty-my-requests');
+  });
+  el('update-form')?.addEventListener('submit',e=>{
+    e.preventDefault();
+    if(!window._editId)return;
+    requests=load();
+    const i=requests.findIndex(r=>String(r.id)===String(window._editId)); if(i===-1)return;
+    requests[i].assignedTo=el('update-assigned').value.trim();
+    requests[i].status=el('update-status').value;
+    requests[i].technicianNotes=el('update-notes').value.trim();
+    if(requests[i].status==='completed')requests[i].completedOn=new Date().toLocaleString();
+    save(); closeUpdateModal(); refreshAll();
+  });
+  el('mark-read-btn')?.addEventListener('click',()=>{
+    if(currentUser?.role==='ictc'){localStorage.setItem(LS_PREFIX+currentUser.username,new Date().toISOString());refreshAll();}
+  });
+  refreshAll();
+});
+function toggleOtherIssue(who){const s=el(who+'-issue'),c=el(who+'-other-issue-container');if(s&&c)c.classList.toggle('hidden',s.value!=='Other');}
+function showConfirm(html){el('confirm-message').innerHTML=html;el('confirm-modal').classList.add('active');}
+function closeConfirm(){el('confirm-modal').classList.remove('active');}
+window.openUpdate=function(id){
+  window._editId=id; requests=load();
+  const r=requests.find(x=>String(x.id)===String(id)); if(!r)return;
+  el('update-modal-body').innerHTML=`<div style="background:#FFF5F5;padding:12px;border-radius:6px;border-left:4px solid #DC143C;margin-bottom:12px"><div><strong>Reference:</strong> ${esc(r.reference)}</div><div><strong>Requestor:</strong> ${esc(r.requestorName)}</div><div><strong>Issue:</strong> ${esc(r.issue)}</div><div><strong>Location:</strong> ${esc(r.location)}</div></div>`;
+  el('update-assigned').value=r.assignedTo||''; el('update-status').value=r.status||'pending'; el('update-notes').value=r.technicianNotes||'';
+  el('update-modal').classList.add('active');
+};
+function closeUpdateModal(){window._editId=null;el('update-modal').classList.remove('active');}
+function logout(){currentUser=null;showPage('home-page');}
+window.showPage=showPage;window.showSection=showSection;window.logout=logout;
+window.toggleOtherIssue=toggleOtherIssue;window.closeUpdateModal=closeUpdateModal;window.closeConfirm=closeConfirm;
+</script>
+</body>
+</html>
